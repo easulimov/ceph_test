@@ -1,0 +1,14 @@
+---
+all:
+  children:
+    ceph:
+      hosts:
+        node01:
+          ansible_host: 
+          ansible_port: 22
+        node02:
+          ansible_host: 
+          ansible_port: 22
+        node03:
+          ansible_host: 
+          ansible_port: 22
