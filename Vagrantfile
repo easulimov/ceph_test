@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
     node01.vm.network "private_network", ip: "10.10.10.11" # Приватный IP-адрес для первой машины
     node01.vm.provider "libvirt" do |libvirt|
       libvirt.driver = "kvm"
-      libvirt.memory = "2048"
+      libvirt.memory = "3072"
       libvirt.cpus = "2"
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
@@ -25,7 +25,7 @@ Vagrant.configure(2) do |config|
     node02.vm.network "private_network", ip: "10.10.10.12" # Приватный IP-адрес для второй машины
     node02.vm.provider "libvirt" do |libvirt|
       libvirt.driver = "kvm"
-      libvirt.memory = "1024"
+      libvirt.memory = "3072"
       libvirt.cpus = "1"
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
     node03.vm.network "private_network", ip: "10.10.10.13" # Приватный IP-адрес для третьей машины
     node03.vm.provider "libvirt" do |libvirt|
       libvirt.driver = "kvm"
-      libvirt.memory = "2048"
+      libvirt.memory = "3072"
       libvirt.cpus = "2"
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
