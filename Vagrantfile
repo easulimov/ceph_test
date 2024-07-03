@@ -2,9 +2,7 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
   config.vagrant.plugins = "vagrant-libvirt"
   config.vm.provision "shell", inline: $script
-  system("virsh net-update default add ip-dhcp-host \"<host mac='52:54:00:fb:95:91' ip='192.168.122.111' />\" --live --config")
-  system("virsh net-update default add ip-dhcp-host \"<host mac='52:54:00:fb:95:92' ip='192.168.122.112' />\" --live --config")
-  system("virsh net-update default add ip-dhcp-host \"<host mac='52:54:00:fb:95:93' ip='192.168.122.113' />\" --live --config")
+
 
   config.vm.define "node01" do |node01|
     node01.vm.box = "generic/ubuntu2204"
@@ -17,7 +15,6 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
-      libvirt.management_network_mac = "52:54:00:fb:95:91"
       libvirt.storage :file, size: "10G", type: 'qcow2'
       libvirt.storage :file, size: "10G", type: 'qcow2'
     end
@@ -34,7 +31,6 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
-      libvirt.management_network_mac = "52:54:00:fb:95:92"
       libvirt.storage :file, size: "10G", type: 'qcow2'
       libvirt.storage :file, size: "10G", type: 'qcow2'
     end
@@ -51,7 +47,6 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
-      libvirt.management_network_mac = "52:54:00:fb:95:93"
       libvirt.storage :file, size: "10G", type: 'qcow2'
       libvirt.storage :file, size: "10G", type: 'qcow2'
     end
