@@ -3,7 +3,6 @@
   become: yes
   tasks:
     - name: "Update /etc/hosts"
-      become: true
       blockinfile:
         dest: /etc/hosts
         block: |

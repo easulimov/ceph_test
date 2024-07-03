@@ -4,11 +4,11 @@ all:
     ceph:
       hosts:
         node01:
-          ansible_host: 
+          ansible_host: 192.168.122.57
           ansible_port: 22
         node02:
-          ansible_host: 
+          ansible_host: 192.168.122.212
           ansible_port: 22
-        node03:
-          ansible_host: 
+        node03: 
+          ansible_host: 192.168.122.120
           ansible_port: 22

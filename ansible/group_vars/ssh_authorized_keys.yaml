@@ -1,0 +1,9 @@
+---
+ssh_authorized_keys_user: 'ansible'
+ssh_authorized_keys:
+  - name: ansible_node_01
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILFXbVu/xfdbW4xtydF4H97z1DjYW8ACTkWvAQeHpio8 node01
+  - name: ansible_node_02
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOx1JLzvt5OlDRoiHidf2Euub73/NHE6e1eFd6zVGo+5 node02
+  - name: ansible_node_03
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFbe/HC87SrdXwdn+gNHivMEsR2/XQJaY7zCfA0Hkdsu node03
