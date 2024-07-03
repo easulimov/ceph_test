@@ -4,7 +4,7 @@
   tasks:
     - name: "Add ssh key for {{ ssh_authorized_keys_user }}"
       become: true
-      authorized_key:
+      ansible.posix.authorized_key:
         user: "{{ ssh_authorized_keys_user }}"
         state: present
         key: "{{ item.key }}"
