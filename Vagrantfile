@@ -2,7 +2,7 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
   config.vagrant.plugins = "vagrant-libvirt"
   config.vm.provision "shell", inline: $script
-
+  config.vm.provision "shell", inline: $ntpconfig
 
   config.vm.define "node01" do |node01|
     node01.vm.box = "generic/ubuntu2204"
@@ -75,11 +75,17 @@ deb http://mirror.yandex.ru/ubuntu jammy-updates main restricted universe multiv
 deb http://mirror.yandex.ru/ubuntu jammy-backports main restricted universe multiverse
 deb http://mirror.yandex.ru/ubuntu jammy-security main restricted universe multiverse
 EOF
-sudo sed -i 's/^#NTP/NTP=ntp1.vniiftri.ru ntp2.vniiftri.ru ntp3.vniiftri.ru ntp4.vniiftri.ru/' /etc/systemd/timesyncd.conf
-sudo systemctl restart systemd-timesyncd.service
+
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y mc wget curl zip tree vim apt-transport-https ca-certificates gnupg2 software-properties-common
 export OS_VERSION=Ubuntu_20.04
 export CRIO_VERSION=1.23
+SCRIPT
+
+
+$ntpconfig = <<-SCRIPT
+sudo sed -i 's/^#NTP/NTP=ntp1.vniiftri.ru ntp2.vniiftri.ru ntp3.vniiftri.ru ntp4.vniiftri.ru/' /etc/systemd/timesyncd.conf
+sudo systemctl restart systemd-timesyncd.service
+sudo systemctl status systemd-timesyncd.service
 SCRIPT
