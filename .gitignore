@@ -3,3 +3,5 @@
 .vagrant/*
 ssl/
 ssl/*
+ceph_private/
+ceph_private/*

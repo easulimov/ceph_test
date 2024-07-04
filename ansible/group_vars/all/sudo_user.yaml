@@ -1,0 +1,3 @@
+---
+sudo_user: ceph
+sudo_user_pass: superstr0ng

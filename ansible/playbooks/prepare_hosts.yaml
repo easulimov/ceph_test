@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: "Update /etc/hosts"
+      ansible.builtin.blockinfile:
+        dest: /etc/hosts
+        block: |
+          {% for host in groups['all'] %}
+          {{ hostvars[host].ansible_host }} {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].inventory_hostname }}
+          {% endfor %}
+        state: present
+        create: yes
+        backup: yes
+        marker: "# Ansible inventory hosts {mark}"
+
+    - name: "Create user {{ sudo_user }}"
+      no_log: true
+      ansible.builtin.user:
+        name: " {{ sudo_user }}"
+        state: present
+        password: "{{ sudo_user_pass | password_hash('sha512') }}"
+        create_home: true
+        shell: /bin/bash
+        expires: -1
+
+    - name: "Make sudo without password for {{ sudo_user }} user"
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ sudo_user }}_sudo"
+        content: "{{ sudo_user }} ALL=(ALL) NOPASSWD: ALL"
+        mode: 0440
+        validate: visudo -c
+
+    - name: "Create folder /home/{{ sudo_user }}/.ssh/"
+      ansible.builtin.file:
+        path: "/home/{{ sudo_user }}/.ssh/"
+        owner: "{{ sudo_user }}"
+        group: "{{ sudo_user }}"
+        state: directory
+        mode: 0700
+
+    - name: "Add ssh key for {{ ssh_authorized_keys_user }}"
+      become: true
+      ansible.posix.authorized_key:
+        user: "{{ ssh_authorized_keys_user }}"
+        state: present
+        key: "{{ item.key }}"
+      with_items: "{{ ssh_authorized_keys }}"
+
+    - name: "Copy ssh key for {{ sudo_user }}"
+      become: true
+      ansible.builtin.copy:
+        src: "..{{ item }}"
+        dest: "/etc/sudoers.d/{{ sudo_user }}_sudo"
+        mode: 0400
+      with_items:
+        - "/ceph_private/id_ed25519"
+        - "/ceph_private/config"
