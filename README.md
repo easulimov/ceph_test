@@ -80,9 +80,9 @@ sudo -u ceph mkdir /var/lib/ceph/mon/ceph-node01
 #### Запуск сервиса
 
 ```bash
-systemctl start ceph-mon@node-01
+systemctl start ceph-mon@node01
 ```
 
 ```bash
-systemctl status ceph-mon@node-01
+systemctl status ceph-mon@node01
 ```
