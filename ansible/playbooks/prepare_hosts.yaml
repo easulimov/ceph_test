@@ -52,6 +52,8 @@
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "/home/{{ sudo_user }}/.ssh/"
+        owner: "{{ sudo_user }}"
+        group: "{{ sudo_user }}"
         mode: 0400
       with_items:
         - "./files/ceph_private/id_ed25519"
