@@ -77,11 +77,19 @@ monmaptool --create --add node01 192.168.122.198 --fsid 02ecfc51-3db2-451f-8f1c-
 sudo -u ceph mkdir /var/lib/ceph/mon/ceph-node01
 ```
 
+#### Инициализация хранилища монитора, с сипользованием ранее созданной связки ключей и карты монитора
+
+
+```bash
+sudo -u ceph ceph-mon --mkfs -i node01 --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+```
+
 #### Запуск сервиса
 
 ```bash
 systemctl start ceph-mon@node01
 ```
+
 
 ```bash
 systemctl status ceph-mon@node01
