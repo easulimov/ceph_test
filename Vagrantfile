@@ -1,4 +1,5 @@
 Vagrant.configure(2) do |config|
+
   config.ssh.insert_key = false
   config.vagrant.plugins = "vagrant-libvirt"
   config.vm.provision "shell", inline: $script
@@ -26,7 +27,7 @@ Vagrant.configure(2) do |config|
     node02.vm.provider "libvirt" do |libvirt|
       libvirt.driver = "kvm"
       libvirt.memory = "2560"
-      libvirt.cpus = "1"
+      libvirt.cpus = "2"
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
@@ -45,7 +46,7 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
-      libvirt.storage :file, size: "10G", type: 'qcow2''
+      libvirt.storage :file, size: "10G", type: 'qcow2'
     end
   end
 
@@ -62,6 +63,7 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_mode = "nat"
     end
   end
+
 end
 
 
