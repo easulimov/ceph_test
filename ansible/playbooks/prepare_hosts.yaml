@@ -50,7 +50,7 @@
     - name: "Copy ssh key for {{ sudo_user }}"
       become: true
       ansible.builtin.copy:
-        src: "..{{ item }}"
+        src: "{{ item }}"
         dest: "/home/{{ sudo_user }}/.ssh/"
         mode: 0400
       with_items:
