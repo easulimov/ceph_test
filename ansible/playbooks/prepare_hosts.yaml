@@ -16,6 +16,7 @@
         marker: "# Ansible inventory hosts {mark}"
 
     - name: "Create user {{ sudo_user }}"
+      no_log: true
       ansible.builtin.user:
         name: "{{ sudo_user }}"
         state: present
@@ -48,11 +49,10 @@
       with_items: "{{ ssh_authorized_keys }}"
 
     - name: "Copy ssh key for {{ sudo_user }}"
-      become: true
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "/home/{{ sudo_user }}/.ssh/"
         mode: 0400
       with_items:
-        - "/ceph_private/id_ed25519"
-        - "/ceph_private/config"
+        - "./files/ceph_private/id_ed25519"
+        - "./files/ceph_private/config"
