@@ -16,7 +16,6 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
       libvirt.storage :file, size: "10G", type: 'qcow2'
-      libvirt.storage :file, size: "10G", type: 'qcow2'
     end
   end
 
@@ -32,7 +31,6 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
       libvirt.storage :file, size: "10G", type: 'qcow2'
-      libvirt.storage :file, size: "10G", type: 'qcow2'
     end
   end
 
@@ -47,8 +45,7 @@ Vagrant.configure(2) do |config|
       libvirt.management_network_name = "default"
       libvirt.management_network_address = "192.168.122.0/24"
       libvirt.management_network_mode = "nat"
-      libvirt.storage :file, size: "10G", type: 'qcow2'
-      libvirt.storage :file, size: "10G", type: 'qcow2'
+      libvirt.storage :file, size: "10G", type: 'qcow2''
     end
   end
 
