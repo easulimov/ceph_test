@@ -16,9 +16,8 @@
         marker: "# Ansible inventory hosts {mark}"
 
     - name: "Create user {{ sudo_user }}"
-      no_log: true
       ansible.builtin.user:
-        name: " {{ sudo_user }}"
+        name: "{{ sudo_user }}"
         state: present
         password: "{{ sudo_user_pass | password_hash('sha512') }}"
         create_home: true
@@ -30,7 +29,7 @@
         dest: "/etc/sudoers.d/{{ sudo_user }}_sudo"
         content: "{{ sudo_user }} ALL=(ALL) NOPASSWD: ALL"
         mode: 0440
-        validate: visudo -c
+        validate: visudo -cf %s
 
     - name: "Create folder /home/{{ sudo_user }}/.ssh/"
       ansible.builtin.file:
@@ -52,7 +51,7 @@
       become: true
       ansible.builtin.copy:
         src: "..{{ item }}"
-        dest: "/etc/sudoers.d/{{ sudo_user }}_sudo"
+        dest: "/home/{{ sudo_user }}/.ssh/"
         mode: 0400
       with_items:
         - "/ceph_private/id_ed25519"
