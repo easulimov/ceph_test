@@ -625,3 +625,99 @@ ceph config set mon mon_warn_on_insecure_global_id_reclaim_allowed false
 ```bash
 ceph -s
 ```
+
+
+### Подключение клиента к ceph
+
+
+#### Создание osd pool подключившись к node01
+```bash
+ceph osd pool create rbd 32
+```
+
+
+#### Просмотр созданного osd pool
+```bash
+ceph osd lspools
+```
+
+
+#### Создание пользователя и предоставление ему доступа к pool
+```bash
+ceph auth get-or-create client.rbd1 mon 'profile rbd' osd 'profile rbd pool=rbd' mgr 'profile rbd pool=rbd'
+```
+
+Вывод:
+```bash
+[client.rbd1]
+	key = AQCTIY1m7Su3DhAAvRbqILMwYczEgGohld/m7Q==
+```
+
+#### Копирование конфигурационного файла ceph на клиентский хост (client)
+```bash
+scp /tmp/config.tar.gz root@client:/tmp
+```
+
+#### Установка ключа архива на хосте client (добавить ключ из ранее полученного вывода команды ceph auth get-or-create)
+```bash
+mkdir /etc/ceph
+```
+
+```bash
+vim /etc/ceph/ceph.client.rbd1.keyring
+```
+
+
+#### Распаковка архива на хосте client
+```bash
+tar xzvf /tmp/config.tar.gz
+```
+
+```bash
+mv etc/ceph/ceph.conf /etc/ceph/
+```
+
+#### Получение вывода rbd с идентификатором пользователя и проверка, что нет image
+```bash
+rbd --id rbd1 ls
+```
+
+#### Создание image
+```bash
+rbd create --id rbd1 --size 1024 image1
+```
+
+
+#### Проверка image
+```bash
+rbd --id rbd1 ls
+```
+
+#### Выполнение маппинга диска на client (подключить как блочное устройство)
+```bash
+rbd map image1 --id rbd1
+```
+
+
+#### Создание файловой системы xfs на блочном устройстве
+```bash
+mkfs.xfs /dev/rbd0
+```
+
+#### Монтирование в директорию
+```bash
+mkdir /mnt/rbd0
+```
+
+```bash
+mount /dev/rbd0 /mnt/rbd0
+```
+
+#### Проверка смонтированного каталога
+```bash
+ls -alF /mnt/rbd0
+```
+
+```bash
+df -hT
+```
