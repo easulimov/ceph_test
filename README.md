@@ -1,7 +1,11 @@
-### Установка ceph
+### Установка ceph (выполнить на всех нодах)
 ```bash
 sudo apt install ceph -y
 ```
+
+
+### Настройка мониторов (MON)
+
 
 #### Генерация UUID для кластера
 ```bash
@@ -120,7 +124,7 @@ scp /tmp/config.tar.gz node03:/tmp/
 ```
 
 
-#### Настройка второго монитора
+#### Настройка второго монитора на node02
 #### Распаковка конфига и ключа
 
 
@@ -229,7 +233,6 @@ ceph -s
 ```
 
 #### Переход на node01 и правка конфига
-
 #### Редактирвоание конфига, добавление информации о 2м и 3м мониторе
 
 ```bash
@@ -264,7 +267,7 @@ host = node03
 mon addr = 192.168.122.103
 ```
 
-#### Настройка третьего монитора
+#### Настройка третьего монитора (node03)
 #### Распаковка конфига и ключа
 
 
@@ -367,8 +370,258 @@ systemctl status ceph-mon@node03
 ```
 
 #### Проверка работы третьего монитора
-
 ```bash
 ceph -s
 ```
 
+### Настройка менеджеров (MGR)
+
+
+#### Выполнение на node01
+#### Генерация ключа пользователя и выдача прав на профиль менеджера и доступ к сервисам osd\mds
+```bash
+ceph auth get-or-create mgr.node01 mon 'allow profile mgr' osd 'allow *' mds 'allow *'
+```
+
+Вывод:
+```bash
+[mgr.node01]
+	key = AQBmDo1mJmdaOhAAoftwU4nyd82F+Nhim8d9Cg==
+```
+
+#### Создание каталога для сервиса менеджера
+```bash
+mkdir -p /var/lib/ceph/mgr/ceph-node01
+```
+
+#### Вставка вывода полученного ранее в файл:
+```bash
+vim /var/lib/ceph/mgr/ceph-node01/keyring
+```
+
+#### Исправление прав на файл
+```bash
+chown -R ceph:ceph /var/lib/ceph/mgr/ceph-node01/keyring
+```
+
+#### Запуск сервиса менеджера 
+```bash
+systemctl start ceph-mgr@node01
+```
+
+#### Проверка статуса сервиса менеджера 
+```bash
+systemctl status ceph-mgr@node01
+```
+
+#### Выполнение на node02
+#### Генерация ключа пользователя и выдача прав на профиль менеджера и доступ к сервисам osd\mds
+```bash
+ceph auth get-or-create mgr.node02 mon 'allow profile mgr' osd 'allow *' mds 'allow *'
+```
+
+Вывод:
+```bash
+[mgr.node02]
+	key = AQDbEI1mw0IEMxAA/MHBCB0HP9BIGtUDYALRQA==
+```
+
+#### Создание каталога для сервиса менеджера
+```bash
+mkdir -p /var/lib/ceph/mgr/ceph-node02
+```
+
+#### Вставка вывода полученного ранее в файл:
+```bash
+vim /var/lib/ceph/mgr/ceph-node02/keyring
+```
+
+#### Исправление прав на файл
+```bash
+chown -R ceph:ceph /var/lib/ceph/mgr/ceph-node02/keyring
+```
+
+#### Запуск сервиса менеджера 
+```bash
+systemctl start ceph-mgr@node02
+```
+
+#### Проверка статуса сервиса менеджера 
+```bash
+systemctl status ceph-mgr@node02
+```
+
+#### Выполнение на node03
+#### Генерация ключа пользователя и выдача прав на профиль менеджера и доступ к сервисам osd\mds
+```bash
+ceph auth get-or-create mgr.node03 mon 'allow profile mgr' osd 'allow *' mds 'allow *'
+```
+
+Вывод:
+```bash
+[mgr.node03]
+	key = AQD1EI1mpywmNhAAnlF0zcB42NdiUxuhfVmwHw==
+```
+
+#### Создание каталога для сервиса менеджера
+```bash
+mkdir -p /var/lib/ceph/mgr/ceph-node03
+```
+
+#### Вставка вывода полученного ранее в файл:
+```bash
+vim /var/lib/ceph/mgr/ceph-node03/keyring
+```
+
+#### Исправление прав на файл
+```bash
+chown -R ceph:ceph /var/lib/ceph/mgr/ceph-node03/keyring
+```
+
+#### Запуск сервиса менеджера 
+```bash
+systemctl start ceph-mgr@node03
+```
+
+#### Проверка статуса сервиса менеджера 
+```bash
+systemctl status ceph-mgr@node03
+```
+
+### Настройка OSD
+
+
+> Важно! В данном примере установка OSD выполняется на те же ноды. В случе необходиомсти установки на новые ноды, нужно будет скопировать конфигурационный файл и ключ, как это было при настройке мониторов на noed02/node03. Также, требуется скопировать ключ для bootstrap, иначе ceph выдаст ошибку при попытке создания блочного устройства osd.
+
+#### Проверка ранее созданного ключа bootstrap на node01
+```bash
+ls -alF /var/lib/ceph/bootstrap-osd/
+```
+
+
+```bash
+cat /var/lib/ceph/bootstrap-osd/ceph.keyring 
+```
+
+Вывод:
+```bash
+[client.bootstrap-osd]
+	key = AQClCY1mjIAMEBAAOgctoXdX2mWhcoAvusnnng==
+	caps mgr = "allow r"
+	caps mon = "profile bootstrap-osd"
+```
+
+#### Архивирование bootstrap ключа на node01
+```bash
+tar cvzf /tmp/osd.tar.gz /var/lib/ceph/bootstrap-osd/
+```
+
+#### Копирование архива с bootstrap ключом на node02 и node03
+```bash
+scp /tmp/osd.tar.gz root@node02:/tmp
+```
+
+```bash
+scp /tmp/osd.tar.gz root@node03:/tmp
+```
+
+#### Распаковка архива на node02
+```bash
+tar xzvf /tmp/osd.tar.gz
+```
+
+
+#### Перемещение ключа на node02
+```bash
+mv var/lib/ceph/bootstrap-osd/ceph.keyring /var/lib/ceph/bootstrap-osd/ceph.keyring
+```
+
+```bash
+chown ceph:ceph /var/lib/ceph/bootstrap-osd/ceph.keyring
+```
+
+
+#### Распаковка архива на node03
+```bash
+tar xzvf /tmp/osd.tar.gz
+```
+
+#### Перемещение ключа на node03
+```bash
+mv var/lib/ceph/bootstrap-osd/ceph.keyring /var/lib/ceph/bootstrap-osd/ceph.keyring
+```
+
+```bash
+chown ceph:ceph /var/lib/ceph/bootstrap-osd/ceph.keyring
+```
+
+#### Создание блочного устройства для osd на node01
+
+
+> К виртуальной машине подключен отдельный диск  /dev/vdb. Список доступных дисков можно получить с помощью команды lsblk
+
+
+```bash
+ceph-volume lvm create --data /dev/vdb
+
+```
+
+#### Создание блочного устройства для osd на node02
+
+
+> К виртуальной машине подключен отдельный диск  /dev/vdb. Список доступных дисков можно получить с помощью команды lsblk
+
+
+```bash
+ceph-volume lvm create --data /dev/vdb
+```
+
+#### Создание блочного устройства для osd на node03
+
+
+> К виртуальной машине подключен отдельный диск /dev/vdb. Список доступных дисков можно получить с помощью команды lsblk
+
+
+```bash
+ceph-volume lvm create --data /dev/vdb
+```
+
+### Проверка статуса ceph
+```bash
+ceph -s
+```
+
+> В процессе сборки кластера ceph могут возникнуть проблемы в виде *_WARN и остаться даже после полной сборки
+
+
+
+#### Архифирование всех отчетов об ошибках
+```bash
+ceph crash archive-all
+```
+
+
+#### Отключение модуля restful
+```bash
+ceph mgr module disable restful
+```
+
+#### Переключение протокол обмена сообщениями между мониторами на 2-ю версию
+```bash
+ceph mon enable-msgr2
+```
+
+#### Отключение insecure global_id
+```bash
+ceph config set mon mon_warn_on_insecure_global_id_reclaim false
+```
+
+
+```bash
+ceph config set mon mon_warn_on_insecure_global_id_reclaim_allowed false
+```
+
+#### Повторная проверка статуса ceph
+```bash
+ceph -s
+```
